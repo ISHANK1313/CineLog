@@ -1,9 +1,6 @@
 package com.cinelog.CineLog.controller;
 
-import com.cinelog.CineLog.dto.MovieListResponse;
-import com.cinelog.CineLog.dto.PopularMovieDto;
-import com.cinelog.CineLog.dto.SearchMovieDto;
-import com.cinelog.CineLog.dto.TodayTrendingDto;
+import com.cinelog.CineLog.dto.*;
 import com.cinelog.CineLog.exception.MovieServiceException;
 import com.cinelog.CineLog.service.CineService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +40,15 @@ public class CineController {
     public ResponseEntity<?> getPopularMovies(@ModelAttribute PopularMovieDto popularMovieDto){
         try{
             return ResponseEntity.ok(service.getPopularMovies(popularMovieDto));
+        }
+        catch (MovieServiceException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error : "+e.getMessage());
+        }
+    }
+    public ResponseEntity<?> getDeepMovieDetails(@RequestParam Integer movie_id, @ModelAttribute MovieQueryDto movieQueryDto){
+        try{
+            return ResponseEntity.ok(service.getDeepMovieDetails(movie_id, movieQueryDto));
         }
         catch (MovieServiceException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

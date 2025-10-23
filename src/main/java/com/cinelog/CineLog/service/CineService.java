@@ -12,7 +12,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class CineService {
@@ -98,6 +98,29 @@ public class CineService {
         catch (Exception e){
         throw new MovieServiceException("Can't find popular Movies...",e);
     }
+
+    }
+
+    public MovieDetailDto getDeepMovieDetails(Integer movie_id,MovieQueryDto movieQueryDto){
+        try {
+            String base = "https://api.themoviedb.org/3/movie/{movie_id}";
+
+            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(base)
+                    .queryParam("api_key", apiKey)
+                    .queryParam("language", movieQueryDto.getLanguage());
+            if (movieQueryDto.getAppend_to_response() != null) {
+                builder.queryParam(movieQueryDto.getAppend_to_response());
+            }
+            String url = builder.buildAndExpand(movie_id).toUriString();
+            MovieDetailDto response = restTemplate.getForObject(url, MovieDetailDto.class);
+            if (response == null) {
+                return new MovieDetailDto();
+            }
+
+            return response;
+        } catch (Exception e) {
+            throw new MovieServiceException("can't search for movie details try again",e);
+        }
 
     }
 
