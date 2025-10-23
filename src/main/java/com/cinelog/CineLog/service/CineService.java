@@ -109,7 +109,7 @@ public class CineService {
                     .queryParam("api_key", apiKey)
                     .queryParam("language", movieQueryDto.getLanguage());
             if (movieQueryDto.getAppend_to_response() != null) {
-                builder.queryParam(movieQueryDto.getAppend_to_response());
+                builder.queryParam("append_to_response",movieQueryDto.getAppend_to_response());
             }
             String url = builder.buildAndExpand(movie_id).toUriString();
             MovieDetailDto response = restTemplate.getForObject(url, MovieDetailDto.class);

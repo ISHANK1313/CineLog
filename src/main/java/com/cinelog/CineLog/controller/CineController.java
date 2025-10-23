@@ -46,7 +46,9 @@ public class CineController {
                     .body("Error : "+e.getMessage());
         }
     }
-    public ResponseEntity<?> getDeepMovieDetails(@RequestParam Integer movie_id, @ModelAttribute MovieQueryDto movieQueryDto){
+
+    @GetMapping("/movie/{movie_id}")
+    public ResponseEntity<?> getDeepMovieDetails(@PathVariable Integer movie_id, @ModelAttribute MovieQueryDto movieQueryDto){
         try{
             return ResponseEntity.ok(service.getDeepMovieDetails(movie_id, movieQueryDto));
         }

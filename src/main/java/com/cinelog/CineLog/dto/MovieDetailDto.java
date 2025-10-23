@@ -1,5 +1,8 @@
 package com.cinelog.CineLog.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MovieDetailDto {
     private boolean adult=true;
     private String belongs_to_collection;

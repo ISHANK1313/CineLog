@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+# Secrets file - DO NOT COMMIT!
+secrets.properties
