@@ -12,7 +12,7 @@ public class User {
     private Long user_id;
     @Column(unique = true, nullable = false)
     private String email;
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String password;
     private LocalDateTime created_at= LocalDateTime.now();
 
