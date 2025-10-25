@@ -1,6 +1,7 @@
 package com.cinelog.CineLog.service;
 
 import com.cinelog.CineLog.dto.AuthResponse;
+import com.cinelog.CineLog.dto.LoginRequestDto;
 import com.cinelog.CineLog.dto.SignUpDto;
 import com.cinelog.CineLog.entity.User;
 import com.cinelog.CineLog.repository.UserRepo;
@@ -42,17 +43,17 @@ public class UserService {
     public boolean isUserExistsByEmail(String email){
         return userRepo.existsByEmail(email);
     }
-    public AuthResponse loginUser(SignUpDto signUpDto){
-          if(!isUserExistsByEmail(signUpDto.getEmail())) {
+    public AuthResponse loginUser(LoginRequestDto loginRequestDto){
+          if(!isUserExistsByEmail(loginRequestDto.getEmail())) {
               return null;
           }
-        User user =findUserByEmail(signUpDto.getEmail());
-        if(!passwordEncoder.matches(user.getPassword(), signUpDto.getPassword())){
+        User user =findUserByEmail(loginRequestDto.getEmail());
+        if(!passwordEncoder.matches(loginRequestDto.getPassword(),user.getPassword())){
            return null;
         }
         AuthResponse authResponse= new AuthResponse();
         Map<String,Object> map= new HashMap<>();
-        authResponse.setToken(jwtUtil.createToken(map, signUpDto.getEmail()));
+        authResponse.setToken(jwtUtil.createToken(map, loginRequestDto.getEmail()));
         return authResponse;
     }
 
