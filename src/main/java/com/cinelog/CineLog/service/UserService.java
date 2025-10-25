@@ -44,12 +44,12 @@ public class UserService {
         return userRepo.existsByEmail(email);
     }
     public AuthResponse loginUser(LoginRequestDto loginRequestDto){
-          if(!isUserExistsByEmail(loginRequestDto.getEmail())) {
-              return null;
-          }
+        if(!isUserExistsByEmail(loginRequestDto.getEmail())) {
+            return null;
+        }
         User user =findUserByEmail(loginRequestDto.getEmail());
         if(!passwordEncoder.matches(loginRequestDto.getPassword(),user.getPassword())){
-           return null;
+            return null;
         }
         AuthResponse authResponse= new AuthResponse();
         Map<String,Object> map= new HashMap<>();
