@@ -25,14 +25,15 @@ public class UserService {
 
     public boolean signUpUser(SignUpDto signUpDto){
         if(isUserExistsByEmail(signUpDto.getEmail())){
-         return false;
+            return false;
         }
-        User user= new User();
+        User user = new User();
         user.setEmail(signUpDto.getEmail());
         user.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
         userRepo.save(user);
         return true;
     }
+
     public User findUserByEmail(String email){
         Optional<User> optionalUser = userRepo.findByEmail(email);
         if(optionalUser.isEmpty()){
@@ -40,21 +41,22 @@ public class UserService {
         }
         return optionalUser.get();
     }
+
     public boolean isUserExistsByEmail(String email){
         return userRepo.existsByEmail(email);
     }
+
     public AuthResponse loginUser(LoginRequestDto loginRequestDto){
         if(!isUserExistsByEmail(loginRequestDto.getEmail())) {
             return null;
         }
-        User user =findUserByEmail(loginRequestDto.getEmail());
-        if(!passwordEncoder.matches(loginRequestDto.getPassword(),user.getPassword())){
+        User user = findUserByEmail(loginRequestDto.getEmail());
+        if(!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())){
             return null;
         }
-        AuthResponse authResponse= new AuthResponse();
-        Map<String,Object> map= new HashMap<>();
+        AuthResponse authResponse = new AuthResponse();
+        Map<String,Object> map = new HashMap<>();
         authResponse.setToken(jwtUtil.createToken(map, loginRequestDto.getEmail()));
         return authResponse;
     }
-
 }

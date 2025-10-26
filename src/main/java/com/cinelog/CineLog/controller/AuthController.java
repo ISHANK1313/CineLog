@@ -21,30 +21,41 @@ public class AuthController {
     private UserService userService;
     @Autowired
     private UserRepo userRepo;
+
     @PostMapping("/signup")
     public ResponseEntity<?> signUpUser(@Valid @RequestBody SignUpDto signUpDto){
         try {
-            if (userService.signUpUser(signUpDto)) {
-                return ResponseEntity.badRequest().body(HttpStatus.BAD_REQUEST + " the user already exits... ");
+            boolean success = userService.signUpUser(signUpDto);
+            if (!success) {
+                // signUpUser returns false when user already exists
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("User with this email already exists");
             }
-            return ResponseEntity.ok().body(HttpStatus.CREATED + " User Created...");
+            // User created successfully
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body("User created successfully");
         }
         catch (Exception e) {
-            return ResponseEntity.badRequest().body(HttpStatus.BAD_REQUEST + " the format of email or password is wrong...");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Invalid email or password format");
         }
     }
+
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequestDto loginRequestDto){
         try {
             AuthResponse response = userService.loginUser(loginRequestDto);
             if (response == null) {
-                return ResponseEntity.badRequest().body(HttpStatus.BAD_REQUEST + " the User already Exists...");
+                // loginUser returns null when credentials are invalid
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body("Invalid email or password");
             }
-            return ResponseEntity.ok().body(response);
+            // Login successful
+            return ResponseEntity.ok(response);
         }
         catch (Exception e){
-            return ResponseEntity.badRequest().body(HttpStatus.BAD_REQUEST + " wrong email or password format ...");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Invalid email or password format");
         }
     }
-
 }
