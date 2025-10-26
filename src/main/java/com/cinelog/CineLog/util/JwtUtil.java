@@ -4,6 +4,7 @@ package com.cinelog.CineLog.util;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -12,7 +13,8 @@ import java.util.Map;
 
 @Component
 public class JwtUtil {
-    private static final String SECRET="vbidvbosbsvoessbouqeuqegrpqgtibg31gto230ybtb2-gbvvg25u2y-569yt29y28v10t";
+    @Value("${jwt.secret}")
+    private  String SECRET;
     private Key getSigningKey(){
         return Keys.hmacShaKeyFor(SECRET.getBytes());
     }

@@ -46,7 +46,7 @@ public class WatchListController {
         }
     }
     @PostMapping
-    public ResponseEntity<?> addMovieInWatchList(AddToWatchList addToWatchList){
+    public ResponseEntity<?> addMovieInWatchList(@RequestBody AddToWatchList addToWatchList){
      try {
          Authentication auth = SecurityContextHolder.getContext().getAuthentication();
          String email = (String) auth.getPrincipal();
@@ -68,7 +68,7 @@ public class WatchListController {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> removeMovieFromWatchList(Long tmdbId){
+    public ResponseEntity<?> removeMovieFromWatchList(@RequestParam Long tmdbId){
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             String email = (String) auth.getPrincipal();

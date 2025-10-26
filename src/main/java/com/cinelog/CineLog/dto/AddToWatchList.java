@@ -1,7 +1,12 @@
 package com.cinelog.CineLog.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class AddToWatchList {
+    @NotNull(message = "TMDB Movie ID is required")
     private Long tmdbMovieId;
+    @NotBlank(message = "Title is required")
     private String title;
     private String overview;
     private String posterPath;
