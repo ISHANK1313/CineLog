@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,7 +37,7 @@ public class WatchListController {
             User user = userService.findUserByEmail(email);
             List<WatchlistItem> watchlistItemList = watchListService.findByUser(user);
             if (watchlistItemList == null) {
-                return ResponseEntity.ok().body("no current watchlist...");
+                return ResponseEntity.ok().body(Collections.emptyList() +"no current watchlist...");
 
             }
             return ResponseEntity.ok().body(watchlistItemList);
