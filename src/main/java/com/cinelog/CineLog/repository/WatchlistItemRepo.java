@@ -13,5 +13,6 @@ public interface WatchlistItemRepo extends JpaRepository<WatchlistItem,Long> {
     public Optional<List<WatchlistItem>> findByUser(User user);
     public boolean existsById(Long id);
     public boolean existsByUser(User user);
+    Optional<WatchlistItem> findByUserAndTmdbMovieId(User user, Long tmdbMovieId);
 
 }
