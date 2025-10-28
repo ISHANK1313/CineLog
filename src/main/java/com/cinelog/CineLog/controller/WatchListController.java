@@ -77,7 +77,7 @@ public class WatchListController {
     }
 
     @DeleteMapping("/{tmdbId}")
-    public ResponseEntity<?> removeMovieFromWatchList(@RequestParam Long tmdbId){
+    public ResponseEntity<?> removeMovieFromWatchList(@PathVariable Long tmdbId){
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             String email = (String) auth.getPrincipal();
