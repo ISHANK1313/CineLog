@@ -6,6 +6,7 @@ import com.cinelog.CineLog.entity.WatchlistItem;
 import com.cinelog.CineLog.repository.WatchlistItemRepo;
 import com.cinelog.CineLog.service.UserService;
 import com.cinelog.CineLog.service.WatchListService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,11 +48,18 @@ public class WatchListController {
         }
     }
     @PostMapping
-    public ResponseEntity<?> addMovieInWatchList(@RequestBody AddToWatchList addToWatchList){
+    public ResponseEntity<?> addMovieInWatchList(@Valid @RequestBody AddToWatchList addToWatchList){
      try {
          Authentication auth = SecurityContextHolder.getContext().getAuthentication();
          String email = (String) auth.getPrincipal();
          User user = userService.findUserByEmail(email);
+         Optional<WatchlistItem> existing = watchlistItemRepo
+                 .findByUserAndTmdbMovieId(user, addToWatchList.getTmdbMovieId());
+
+         if (existing.isPresent()) {
+             return ResponseEntity.status(HttpStatus.CONFLICT)
+                     .body("Movie already exists in your watchlist");
+         }
          WatchlistItem watchlistItem = new WatchlistItem();
          watchlistItem.setUser(user);
          watchlistItem.setAddedAt(LocalDateTime.now());
@@ -68,7 +76,7 @@ public class WatchListController {
      }
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{tmdbId}")
     public ResponseEntity<?> removeMovieFromWatchList(@RequestParam Long tmdbId){
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();

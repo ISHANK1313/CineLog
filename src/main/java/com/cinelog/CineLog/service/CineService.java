@@ -79,26 +79,36 @@ public class CineService {
     }
 
     public MovieListResponse getPopularMovies(PopularMovieDto popularMovieDto){
-        try{String base= "https://api.themoviedb.org/3/movie/popular";
-            UriComponentsBuilder builder=UriComponentsBuilder.fromHttpUrl(base)
-                    .queryParam("api_key", apiKey)
-                    .queryParam("language",popularMovieDto.getLanguage())
-                    .queryParam("page",popularMovieDto.getPage());
-            if(popularMovieDto.getRegion()!=null){
-                builder.queryParam("region",popularMovieDto.getRegion());
-            }
-        String url = builder.toUriString();
-        MovieListResponse response = restTemplate.getForObject(url, MovieListResponse.class);
-        if (response == null || response.getResults() == null) {
-            return new MovieListResponse();
-        }
-        addGenresToMovies(response.getResults());
-        return response;
-    }
-        catch (Exception e){
-        throw new MovieServiceException("Can't find popular Movies...",e);
-    }
+        try {
 
+            if (popularMovieDto.getPage() != null && popularMovieDto.getPage() > 500) {
+
+                popularMovieDto.setPage(500);
+            }
+
+            String base = "https://api.themoviedb.org/3/movie/popular";
+            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(base)
+                    .queryParam("api_key", apiKey)
+                    .queryParam("language", popularMovieDto.getLanguage())
+                    .queryParam("page", popularMovieDto.getPage());
+
+            if(popularMovieDto.getRegion() != null){
+                builder.queryParam("region", popularMovieDto.getRegion());
+            }
+
+            String url = builder.toUriString();
+            MovieListResponse response = restTemplate.getForObject(url, MovieListResponse.class);
+
+            if (response == null || response.getResults() == null) {
+                return new MovieListResponse();
+            }
+
+            addGenresToMovies(response.getResults());
+            return response;
+        }
+        catch (Exception e){
+            throw new MovieServiceException("Can't find popular movies", e);
+        }
     }
 
     public MovieDetailDto getDeepMovieDetails(Integer movie_id,MovieQueryDto movieQueryDto){
