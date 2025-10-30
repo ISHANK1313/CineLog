@@ -1,10 +1,37 @@
-HELP.md
-target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+# ============================================
+# BACKEND (Spring Boot / Java)
+# ============================================
 
-### STS ###
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Gradle
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# IDE - IntelliJ IDEA
+.idea
+*.iws
+*.iml
+*.ipr
+/shelf/
+/workspace.xml
+/mavenHomeManager.xml
+out/
+
+# IDE - Eclipse
 .apt_generated
 .classpath
 .factorypath
@@ -12,26 +39,110 @@ target/
 .settings
 .springBeans
 .sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
+# IDE - NetBeans
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
-### VS Code ###
+# IDE - VS Code
 .vscode/
 
+# MacOS
+.DS_Store
 
-# Secrets file - DO NOT COMMIT!
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ============================================
+# SECRETS - NEVER COMMIT THESE!
+# ============================================
+
+# Application secrets
 secrets.properties
+application-local.properties
+*.key
+*.pem
+*.p12
+*.jks
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# ============================================
+# FRONTEND (React / Node.js)
+# ============================================
+
+# Dependencies
+cinelog-frontend/node_modules/
+cinelog-frontend/npm-debug.log*
+cinelog-frontend/yarn-debug.log*
+cinelog-frontend/yarn-error.log*
+cinelog-frontend/pnpm-debug.log*
+cinelog-frontend/lerna-debug.log*
+
+# Build output
+cinelog-frontend/dist/
+cinelog-frontend/dist-ssr/
+cinelog-frontend/build/
+
+# Environment files
+cinelog-frontend/.env
+cinelog-frontend/.env.local
+cinelog-frontend/.env.production
+
+# Testing
+cinelog-frontend/coverage/
+
+# Editor files
+cinelog-frontend/.vscode/*
+!cinelog-frontend/.vscode/extensions.json
+cinelog-frontend/.idea
+
+# OS files
+cinelog-frontend/.DS_Store
+*.local
+
+# ============================================
+# DATABASE
+# ============================================
+
+# H2 Database
+*.h2.db
+*.trace.db
+*.mv.db
+
+# PostgreSQL
+*.sql
+*.dump
+
+# ============================================
+# TEMPORARY & CACHE FILES
+# ============================================
+
+# Temp files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Cache
+.cache/
+*.cache
