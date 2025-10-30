@@ -1,0 +1,9 @@
+runtime:
+  name: java
+  version: 17
+  container:
+    command: java -Dserver.port=$PORT -jar /home/site/wwwroot/CineLog-0.0.1-SNAPSHOT.jar
+
+build:
+  command: ./mvnw clean package -DskipTests
+  artifact: target/CineLog-0.0.1-SNAPSHOT.jar

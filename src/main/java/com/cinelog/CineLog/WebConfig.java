@@ -1,4 +1,4 @@
-package com.cinelog.config;
+package com.cinelog.CineLog;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -11,9 +11,9 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins(
                         "http://localhost:3000",
-                        "https://*.vercel.app",      // Vercel frontend
-                        "https://*.railway.app",     // Railway backend
-                        "https://*.netlify.app"      // Backup
+                        "https://*.vercel.app",
+                        "https://*.azurewebsites.net",
+                        "https://*.azure.com"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
