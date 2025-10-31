@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication
-@PropertySource("classpath:secrets.properties")
+@PropertySource(value = "classpath:secrets.properties", ignoreResourceNotFound = true)
 public class CineLogApplication {
 
 	public static void main(String[] args) {
