@@ -1,214 +1,148 @@
 import React, { useState, useEffect } from 'react';
-import { Search as SearchIcon, X } from 'lucide-react';
+import { Search as SearchIcon, X, Film } from 'lucide-react';
 import { movieAPI, watchlistAPI } from '../services/api';
 import MovieCard from '../src/components/MovieCard';
 import MovieDetailsModal from '../src/components/MovieDetailsModal';
 import Loading from '../src/components/Loading';
 import ErrorMessage from '../src/components/ErrorMessage';
+import { useAuth } from '../context/AuthContext'; // Import useAuth
 
-const Signup = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+const Search = () => {
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [watchlistIds, setWatchlistIds] = useState(new Set());
+  const [selectedMovieId, setSelectedMovieId] = useState(null);
+  const [hasSearched, setHasSearched] = useState(false);
 
-  const { signup, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
+  // Use auth context to check for login status
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
+    // Only fetch watchlist if user is authenticated
     if (isAuthenticated) {
-      navigate('/');
+      refreshWatchlist();
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated]);
 
-  const validateEmail = (email) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
+  const refreshWatchlist = async () => {
+    const result = await watchlistAPI.getWatchlist();
+    if (result.success) {
+      const ids = new Set(result.data.map((item) => item.tmdbMovieId));
+      setWatchlistIds(ids);
+    }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
-
-    if (!email || !password || !confirmPassword) {
-      setError('Please fill in all fields');
-      return;
-    }
-
-    if (!validateEmail(email)) {
-      setError('Please enter a valid email address');
-      return;
-    }
-
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters');
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
+    if (!query) {
+      setError('Please enter something to search');
       return;
     }
 
     setLoading(true);
+    setError('');
+    setHasSearched(true);
 
     try {
-      const result = await signup(email, password);
+      const result = await movieAPI.searchMovies(query);
       if (result.success) {
-        setSuccess('Account created successfully! Redirecting to login...');
-        setTimeout(() => {
-          navigate('/login');
-        }, 2000);
+        setResults(result.data.results || []);
       } else {
-        setError(result.message || 'Signup failed. Please try again.');
+        setError(result.message || 'Failed to fetch search results');
+        setResults([]);
       }
     } catch (err) {
-      setError('An error occurred. Please try again.');
+      setError('An error occurred while searching');
+      setResults([]);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900">
-      <div className="max-w-md w-full mx-auto">
-        {/* Logo */}
-        <div className="text-center mb-8 animate-fade-in">
-          <div className="flex justify-center mb-4">
-            <Film className="w-16 h-16 text-primary-500" />
-          </div>
-          <h1 className="text-4xl font-bold gradient-text mb-2">CineLog</h1>
-          <p className="text-gray-400">Join the ultimate movie community</p>
-        </div>
-
-        {/* Signup Form */}
-        <div className="card p-8 animate-slide-up">
-          <h2 className="text-2xl font-bold mb-6 text-center text-white">Create Account</h2>
-
-          <ErrorMessage message={error} onClose={() => setError('')} />
-          <SuccessMessage message={success} onClose={() => setSuccess('')} />
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-2 text-white">
-                Email
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none z-10" />
-                <input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-dark-700 text-white border border-dark-600 rounded-lg px-4 py-3 pl-10 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 placeholder-gray-500"
-                  placeholder="Enter your email"
-                  disabled={loading}
-                  autoComplete="email"
-                  style={{ color: 'white' }}
-                />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium mb-2 text-white">
-                Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none z-10" />
-                <input
-                  id="password"
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-dark-700 text-white border border-dark-600 rounded-lg px-4 py-3 pl-10 pr-12 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 placeholder-gray-500"
-                  placeholder="Create a password"
-                  disabled={loading}
-                  autoComplete="new-password"
-                  style={{ color: 'white' }}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors z-10"
-                  disabled={loading}
-                  tabIndex={-1}
-                >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
-              </div>
-              <p className="text-xs text-gray-400 mt-1">Must be at least 6 characters</p>
-            </div>
-
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium mb-2 text-white">
-                Confirm Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none z-10" />
-                <input
-                  id="confirmPassword"
-                  type={showConfirmPassword ? 'text' : 'password'}
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full bg-dark-700 text-white border border-dark-600 rounded-lg px-4 py-3 pl-10 pr-12 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 placeholder-gray-500"
-                  placeholder="Confirm your password"
-                  disabled={loading}
-                  autoComplete="new-password"
-                  style={{ color: 'white' }}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors z-10"
-                  disabled={loading}
-                  tabIndex={-1}
-                >
-                  {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
-              </div>
-            </div>
-
+    <div className="min-h-screen bg-dark-900">
+      <div className="container mx-auto px-4 py-12">
+        {/* Search Bar */}
+        <form onSubmit={handleSearch} className="max-w-2xl mx-auto mb-12">
+          <div className="relative">
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search for a movie..."
+              className="w-full bg-dark-700 text-white border border-dark-600 rounded-lg px-4 py-4 pl-12 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300 placeholder-gray-500"
+            />
+            <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            {query && (
+              <button
+                type="button"
+                onClick={() => setQuery('')}
+                className="absolute right-14 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            )}
             <button
               type="submit"
+              className="absolute right-2 top-1/2 -translate-y-1/2 btn-primary py-2 px-4"
               disabled={loading}
-              className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? (
-                <div className="flex items-center justify-center">
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                  Creating account...
-                </div>
-              ) : (
-                'Sign Up'
-              )}
+              {loading ? '...' : 'Search'}
             </button>
-          </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-gray-400">
-              Already have an account?{' '}
-              <Link
-                to="/login"
-                className="text-primary-500 hover:text-primary-400 font-semibold transition-colors"
-              >
-                Login
-              </Link>
-            </p>
           </div>
-        </div>
+        </form>
 
-        {/* Footer */}
-        <div className="mt-8 text-center text-gray-500 text-sm">
-          <p>By signing up, you agree to our Terms & Privacy Policy</p>
-        </div>
+        <ErrorMessage message={error} onClose={() => setError('')} />
+
+        {/* Results */}
+        {loading ? (
+          <Loading />
+        ) : (
+          <div>
+            {!hasSearched && (
+              <div className="text-center py-20 text-gray-500">
+                <SearchIcon className="w-24 h-24 mx-auto mb-4" />
+                <h2 className="text-2xl font-semibold">Search CineLog</h2>
+                <p>Find your next favorite movie.</p>
+              </div>
+            )}
+            {hasSearched && results.length === 0 && (
+              <div className="text-center py-20 text-gray-500">
+                <Film className="w-24 h-24 mx-auto mb-4" />
+                <h2 className="text-2xl font-semibold">No results found</h2>
+                <p>Try a different search query.</p>
+              </div>
+            )}
+            {results.length > 0 && (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+                {results.map((movie) => (
+                  <MovieCard
+                    key={movie.id}
+                    movie={movie}
+                    isInWatchlist={watchlistIds.has(movie.id)}
+                    onWatchlistChange={refreshWatchlist}
+                    onDetailsClick={(movie) => setSelectedMovieId(movie.id)}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
+
+      {/* Movie Details Modal */}
+      {selectedMovieId && (
+        <MovieDetailsModal
+          movieId={selectedMovieId}
+          onClose={() => setSelectedMovieId(null)}
+          isInWatchlist={watchlistIds.has(selectedMovieId)}
+          onWatchlistChange={refreshWatchlist}
+        />
+      )}
     </div>
   );
 };
 
-export default Signup;
+export default Search;

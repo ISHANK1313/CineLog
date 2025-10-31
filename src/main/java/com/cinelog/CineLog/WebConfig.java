@@ -20,7 +20,7 @@ public class WebConfig {
         config.setAllowedOrigins(Arrays.asList(
                 "http://localhost:3000",
                 "http://localhost:5173",
-                "https://cine-log-ashen.vercel.app/"
+                "https://cine-log-ashen.vercel.app"
         ));
 
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
