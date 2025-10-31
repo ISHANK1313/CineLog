@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MovieDetailDto {
-    private boolean adult=true;
+    private Boolean adult=true;
     private Object belongs_to_collection;
     private Integer budget=0;
     private String homepage;
@@ -24,11 +24,11 @@ public class MovieDetailDto {
     private Number vote_average;
     private Integer vote_count;
 
-    public boolean isAdult() {
+    public Boolean isAdult() {
         return adult;
     }
 
-    public void setAdult(boolean adult) {
+    public void setAdult(Boolean adult) {
         this.adult = adult;
     }
 

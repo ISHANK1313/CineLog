@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 
         private Long tmdbMovieId;
         private String title;
+        @Column(columnDefinition = "TEXT")
         private String overview;
         private String posterPath;
         private String releaseDate;
