@@ -12,8 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins(
                         "http://localhost:3000",
                         "https://*.vercel.app",
-                        "https://*.azurewebsites.net",
-                        "https://*.azure.com"
+                        "https://*.onrender.com"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
