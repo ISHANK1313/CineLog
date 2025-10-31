@@ -24,7 +24,7 @@
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-dark-500;
+    @apply bg-dark-700; /* Or bg-primary-500, which also exists */
   }
 }
 
