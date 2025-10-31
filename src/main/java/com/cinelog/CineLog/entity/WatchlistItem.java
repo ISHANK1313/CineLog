@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "watchlist_item")
 public class WatchlistItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,25 +17,28 @@ public class WatchlistItem {
     @JsonIgnore
     private User user;
 
+    @Column(name = "tmdb_movie_id")
     private Long tmdbMovieId;
 
-    // FIXED: Increase length to handle long titles
-    @Column(length = 500)
+    // FIXED: Increased length to handle long titles
+    @Column(name = "title", length = 500)
     private String title;
 
-    @Column(columnDefinition = "TEXT")
+    // FIXED: TEXT type for unlimited length
+    @Column(name = "overview", columnDefinition = "TEXT")
     private String overview;
 
-    // FIXED: Poster paths can be very long URLs
-    @Column(length = 1000)
+    // FIXED: Increased length for long poster URLs
+    @Column(name = "poster_path", length = 1000)
     private String posterPath;
 
-    @Column(length = 50)
+    @Column(name = "release_date", length = 50)
     private String releaseDate;
 
+    @Column(name = "added_at")
     private LocalDateTime addedAt;
 
-
+    // Getters and Setters
     public Long getId() {
         return id;
     }
