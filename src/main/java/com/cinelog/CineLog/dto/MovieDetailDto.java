@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MovieDetailDto {
     private boolean adult=true;
-    private String belongs_to_collection;
+    private Object belongs_to_collection;
     private Integer budget=0;
     private String homepage;
     private Integer id=0;
@@ -32,11 +32,11 @@ public class MovieDetailDto {
         this.adult = adult;
     }
 
-    public String getBelongs_to_collection() {
+    public Object getBelongs_to_collection() {
         return belongs_to_collection;
     }
 
-    public void setBelongs_to_collection(String belongs_to_collection) {
+    public void setBelongs_to_collection(Object belongs_to_collection) {
         this.belongs_to_collection = belongs_to_collection;
     }
 
