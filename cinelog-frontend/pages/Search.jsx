@@ -6,227 +6,209 @@ import MovieDetailsModal from '../src/components/MovieDetailsModal';
 import Loading from '../src/components/Loading';
 import ErrorMessage from '../src/components/ErrorMessage';
 
-const Search = () => {
-  const [query, setQuery] = useState('');
-  const [movies, setMovies] = useState([]);
-  const [watchlistIds, setWatchlistIds] = useState(new Set());
-  const [loading, setLoading] = useState(false);
+const Signup = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
-  const [selectedMovieId, setSelectedMovieId] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
-  const [hasSearched, setHasSearched] = useState(false);
+  const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const { signup, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetchWatchlist();
-  }, []);
-
-  const fetchWatchlist = async () => {
-    const result = await watchlistAPI.getWatchlist();
-    if (result.success) {
-      const ids = new Set(result.data.map((item) => item.tmdbMovieId));
-      setWatchlistIds(ids);
+    if (isAuthenticated) {
+      navigate('/');
     }
+  }, [isAuthenticated, navigate]);
+
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
   };
 
-  const handleSearch = async (e, page = 1) => {
-    if (e) e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
 
-    if (!query.trim()) {
-      setError('Please enter a search term');
+    if (!email || !password || !confirmPassword) {
+      setError('Please fill in all fields');
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
       return;
     }
 
     setLoading(true);
-    setError('');
-    setHasSearched(true);
 
     try {
-      const result = await movieAPI.searchMovies(query, page);
+      const result = await signup(email, password);
       if (result.success) {
-        setMovies(result.data.results || []);
-        setTotalPages(result.data.total_pages || 0);
-        setCurrentPage(page);
+        setSuccess('Account created successfully! Redirecting to login...');
+        setTimeout(() => {
+          navigate('/login');
+        }, 2000);
       } else {
-        setError(result.message || 'Failed to search movies');
-        setMovies([]);
+        setError(result.message || 'Signup failed. Please try again.');
       }
     } catch (err) {
-      setError('An error occurred while searching');
-      setMovies([]);
+      setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  const handlePageChange = (newPage) => {
-    handleSearch(null, newPage);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const clearSearch = () => {
-    setQuery('');
-    setMovies([]);
-    setError('');
-    setHasSearched(false);
-    setCurrentPage(1);
-    setTotalPages(0);
-  };
-
-  const refreshWatchlist = async () => {
-    await fetchWatchlist();
-  };
-
   return (
-    <div className="min-h-screen bg-dark-900">
-      <div className="container mx-auto px-4 py-12">
-        {/* Search Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 gradient-text">
-            Search Movies
-          </h1>
-          <p className="text-gray-400">Find your favorite movies from our extensive database</p>
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900">
+      <div className="max-w-md w-full mx-auto">
+        {/* Logo */}
+        <div className="text-center mb-8 animate-fade-in">
+          <div className="flex justify-center mb-4">
+            <Film className="w-16 h-16 text-primary-500" />
+          </div>
+          <h1 className="text-4xl font-bold gradient-text mb-2">CineLog</h1>
+          <p className="text-gray-400">Join the ultimate movie community</p>
         </div>
 
-        {/* Search Form */}
-        <form onSubmit={handleSearch} className="max-w-2xl mx-auto mb-12">
-          <div className="relative">
-            <SearchIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400" />
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search for movies..."
-              className="input-field pl-14 pr-14 text-lg"
-            />
-            {query && (
-              <button
-                type="button"
-                onClick={clearSearch}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            )}
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn-primary w-full mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? (
-              <div className="flex items-center justify-center">
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                Searching...
+        {/* Signup Form */}
+        <div className="card p-8 animate-slide-up">
+          <h2 className="text-2xl font-bold mb-6 text-center text-white">Create Account</h2>
+
+          <ErrorMessage message={error} onClose={() => setError('')} />
+          <SuccessMessage message={success} onClose={() => setSuccess('')} />
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium mb-2 text-white">
+                Email
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none z-10" />
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full bg-dark-700 text-white border border-dark-600 rounded-lg px-4 py-3 pl-10 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 placeholder-gray-500"
+                  placeholder="Enter your email"
+                  disabled={loading}
+                  autoComplete="email"
+                  style={{ color: 'white' }}
+                />
               </div>
-            ) : (
-              'Search'
-            )}
-          </button>
-        </form>
-
-        <ErrorMessage message={error} onClose={() => setError('')} />
-
-        {/* Search Results */}
-        {loading ? (
-          <Loading />
-        ) : hasSearched ? (
-          movies.length === 0 ? (
-            <div className="text-center py-12">
-              <SearchIcon className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <p className="text-xl text-gray-400">No movies found for "{query}"</p>
-              <p className="text-gray-500 mt-2">Try different keywords</p>
             </div>
-          ) : (
-            <>
-              <div className="mb-6">
-                <p className="text-gray-400">
-                  Found {movies.length} results for "<span className="text-white font-semibold">{query}</span>"
-                </p>
+
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium mb-2 text-white">
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none z-10" />
+                <input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full bg-dark-700 text-white border border-dark-600 rounded-lg px-4 py-3 pl-10 pr-12 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 placeholder-gray-500"
+                  placeholder="Create a password"
+                  disabled={loading}
+                  autoComplete="new-password"
+                  style={{ color: 'white' }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors z-10"
+                  disabled={loading}
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
               </div>
+              <p className="text-xs text-gray-400 mt-1">Must be at least 6 characters</p>
+            </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
-                {movies.map((movie) => (
-                  <MovieCard
-                    key={movie.id}
-                    movie={movie}
-                    isInWatchlist={watchlistIds.has(movie.id)}
-                    onWatchlistChange={refreshWatchlist}
-                    onDetailsClick={(movie) => setSelectedMovieId(movie.id)}
-                  />
-                ))}
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium mb-2 text-white">
+                Confirm Password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none z-10" />
+                <input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="w-full bg-dark-700 text-white border border-dark-600 rounded-lg px-4 py-3 pl-10 pr-12 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 placeholder-gray-500"
+                  placeholder="Confirm your password"
+                  disabled={loading}
+                  autoComplete="new-password"
+                  style={{ color: 'white' }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors z-10"
+                  disabled={loading}
+                  tabIndex={-1}
+                >
+                  {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
               </div>
+            </div>
 
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <div className="flex justify-center items-center mt-12 space-x-2">
-                  <button
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                    className="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Previous
-                  </button>
-
-                  <div className="flex items-center space-x-2">
-                    {[...Array(Math.min(5, totalPages))].map((_, i) => {
-                      let pageNum;
-                      if (totalPages <= 5) {
-                        pageNum = i + 1;
-                      } else if (currentPage <= 3) {
-                        pageNum = i + 1;
-                      } else if (currentPage >= totalPages - 2) {
-                        pageNum = totalPages - 4 + i;
-                      } else {
-                        pageNum = currentPage - 2 + i;
-                      }
-
-                      return (
-                        <button
-                          key={i}
-                          onClick={() => handlePageChange(pageNum)}
-                          className={`w-10 h-10 rounded-lg font-semibold transition-all duration-300 ${
-                            currentPage === pageNum
-                              ? 'bg-primary-600 text-white'
-                              : 'bg-dark-700 text-gray-300 hover:bg-dark-600'
-                          }`}
-                        >
-                          {pageNum}
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  <button
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                    className="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Next
-                  </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                  Creating account...
                 </div>
+              ) : (
+                'Sign Up'
               )}
-            </>
-          )
-        ) : (
-          <div className="text-center py-12">
-            <SearchIcon className="w-24 h-24 text-gray-700 mx-auto mb-4" />
-            <p className="text-xl text-gray-400">Start searching for your favorite movies</p>
-          </div>
-        )}
-      </div>
+            </button>
+          </form>
 
-      {/* Movie Details Modal */}
-      {selectedMovieId && (
-        <MovieDetailsModal
-          movieId={selectedMovieId}
-          onClose={() => setSelectedMovieId(null)}
-          isInWatchlist={watchlistIds.has(selectedMovieId)}
-          onWatchlistChange={refreshWatchlist}
-        />
-      )}
+          <div className="mt-6 text-center">
+            <p className="text-gray-400">
+              Already have an account?{' '}
+              <Link
+                to="/login"
+                className="text-primary-500 hover:text-primary-400 font-semibold transition-colors"
+              >
+                Login
+              </Link>
+            </p>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="mt-8 text-center text-gray-500 text-sm">
+          <p>By signing up, you agree to our Terms & Privacy Policy</p>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default Search;
+export default Signup;

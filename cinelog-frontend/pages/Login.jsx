@@ -53,7 +53,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900">
-      <div className="max-w-md w-full">
+      <div className="max-w-md w-full mx-auto">
         {/* Logo */}
         <div className="text-center mb-8 animate-fade-in">
           <div className="flex justify-center mb-4">
@@ -65,13 +65,13 @@ const Login = () => {
 
         {/* Login Form */}
         <div className="card p-8 animate-slide-up">
-          <h2 className="text-2xl font-bold mb-6 text-center">Welcome Back</h2>
+          <h2 className="text-2xl font-bold mb-6 text-center text-white">Welcome Back</h2>
 
           <ErrorMessage message={error} onClose={() => setError('')} />
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-2 text-gray-300">
+              <label htmlFor="email" className="block text-sm font-medium mb-2 text-white">
                 Email
               </label>
               <div className="relative">
@@ -81,16 +81,17 @@ const Login = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-dark-700 text-white border border-dark-600 rounded-lg px-4 py-3 pl-10 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300"
+                  className="w-full bg-dark-700 text-white border border-dark-600 rounded-lg px-4 py-3 pl-10 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 placeholder-gray-500"
                   placeholder="Enter your email"
                   disabled={loading}
                   autoComplete="email"
+                  style={{ color: 'white' }}
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium mb-2 text-gray-300">
+              <label htmlFor="password" className="block text-sm font-medium mb-2 text-white">
                 Password
               </label>
               <div className="relative">
@@ -100,10 +101,11 @@ const Login = () => {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-dark-700 text-white border border-dark-600 rounded-lg px-4 py-3 pl-10 pr-12 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300"
+                  className="w-full bg-dark-700 text-white border border-dark-600 rounded-lg px-4 py-3 pl-10 pr-12 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 placeholder-gray-500"
                   placeholder="Enter your password"
                   disabled={loading}
                   autoComplete="current-password"
+                  style={{ color: 'white' }}
                 />
                 <button
                   type="button"
