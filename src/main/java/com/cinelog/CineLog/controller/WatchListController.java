@@ -70,7 +70,7 @@ public class WatchListController {
             watchlistItem.setAddedAt(LocalDateTime.now());
             watchlistItem.setTmdbMovieId(addToWatchList.getTmdbMovieId());
 
-            // Safely handle long values
+
             String title = addToWatchList.getTitle();
             if (title != null && title.length() > 500) {
                 title = title.substring(0, 497) + "...";
