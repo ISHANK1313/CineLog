@@ -20,8 +20,7 @@ public class WebConfig {
         config.setAllowedOrigins(Arrays.asList(
                 "http://localhost:3000",
                 "http://localhost:5173",
-                "https://*.netlify.app",  // All Netlify subdomains
-                "https://cinelog.netlify.app"  // Your custom domain (if you set one)
+                "https://cine-log-ashen.vercel.app/"
         ));
 
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
