@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { X, Star, Calendar, Clock, DollarSign, Plus, Check } from 'lucide-react';
-import { movieAPI, watchlistAPI } from '../services/api';
+import { movieAPI, watchlistAPI } from '../../services/api';
 import Loading from './Loading';
 
 const MovieDetailsModal = ({ movieId, onClose, isInWatchlist: initialWatchlistState, onWatchlistChange }) => {

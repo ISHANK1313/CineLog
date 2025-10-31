@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Bookmark, Trash2 } from 'lucide-react';
 import { watchlistAPI } from '../services/api';
-import MovieDetailsModal from '../components/MovieDetailsModal';
-import Loading from '../components/Loading';
-import ErrorMessage from '../components/ErrorMessage';
-import SuccessMessage from '../components/SuccessMessage';
+import MovieDetailsModal from '../src/components/MovieDetailsModal';
+import Loading from '../src/components/Loading';
+import ErrorMessage from '../src/components/ErrorMessage';
+import SuccessMessage from '../src/components/SuccessMessage';
 
 const Watchlist = () => {
   const [watchlist, setWatchlist] = useState([]);

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Search as SearchIcon, X } from 'lucide-react';
 import { movieAPI, watchlistAPI } from '../services/api';
-import MovieCard from '../components/MovieCard';
-import MovieDetailsModal from '../components/MovieDetailsModal';
-import Loading from '../components/Loading';
-import ErrorMessage from '../components/ErrorMessage';
+import MovieCard from '../src/components/MovieCard';
+import MovieDetailsModal from '../src/components/MovieDetailsModal';
+import Loading from '../src/components/Loading';
+import ErrorMessage from '../src/components/ErrorMessage';
 
 const Search = () => {
   const [query, setQuery] = useState('');

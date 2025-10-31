@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Star, Plus, Check, Calendar, Info } from 'lucide-react';
-import { watchlistAPI } from '../services/api';
+import { watchlistAPI } from '../../services/api';
 
 const MovieCard = ({ movie, isInWatchlist = false, onWatchlistChange, onDetailsClick }) => {
   const [addingToWatchlist, setAddingToWatchlist] = useState(false);

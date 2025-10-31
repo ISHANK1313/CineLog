@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Film, Mail, Lock, Eye, EyeOff, CheckCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import ErrorMessage from '../components/ErrorMessage';
-import SuccessMessage from '../components/SuccessMessage';
+import ErrorMessage from '../src/components/ErrorMessage';
+import SuccessMessage from '../src/components/SuccessMessage';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
