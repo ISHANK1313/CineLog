@@ -4,27 +4,27 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MovieDetailDto {
-    private Boolean adult=true;
+    private Boolean adult;
     private Object belongs_to_collection;
-    private Integer budget=0;
+    private Long budget;
     private String homepage;
-    private Integer id=0;
+    private Integer id;
     private String imdb_id;
     private String original_language;
     private String original_title;
     private String overview;
-    private Number popularity;
+    private Double popularity;
     private String poster_path;
     private String release_date;
-    private Integer revenue=0;
-    private Integer runtime=0;
+    private Long revenue;
+    private Integer runtime;
     private String status;
     private String tagline;
     private String title;
-    private Number vote_average;
+    private Double vote_average;
     private Integer vote_count;
 
-    public Boolean isAdult() {
+    public Boolean getAdult() {
         return adult;
     }
 
@@ -40,11 +40,11 @@ public class MovieDetailDto {
         this.belongs_to_collection = belongs_to_collection;
     }
 
-    public Integer getBudget() {
+    public Long getBudget() {
         return budget;
     }
 
-    public void setBudget(Integer budget) {
+    public void setBudget(Long budget) {
         this.budget = budget;
     }
 
@@ -96,11 +96,11 @@ public class MovieDetailDto {
         this.overview = overview;
     }
 
-    public Number getPopularity() {
+    public Double getPopularity() {
         return popularity;
     }
 
-    public void setPopularity(Number popularity) {
+    public void setPopularity(Double popularity) {
         this.popularity = popularity;
     }
 
@@ -120,11 +120,11 @@ public class MovieDetailDto {
         this.release_date = release_date;
     }
 
-    public Integer getRevenue() {
+    public Long getRevenue() {
         return revenue;
     }
 
-    public void setRevenue(Integer revenue) {
+    public void setRevenue(Long revenue) {
         this.revenue = revenue;
     }
 
@@ -160,11 +160,11 @@ public class MovieDetailDto {
         this.title = title;
     }
 
-    public Number getVote_average() {
+    public Double getVote_average() {
         return vote_average;
     }
 
-    public void setVote_average(Number vote_average) {
+    public void setVote_average(Double vote_average) {
         this.vote_average = vote_average;
     }
 
